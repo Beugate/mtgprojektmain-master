@@ -1,26 +1,28 @@
-import { createRouter, createWebHistory } from 'vue-router';
+// router/index.js
+import { createRouter, createWebHistory } from 'vue-router'
+import Home from '../views/Home.vue'
 
 const routes = [
   {
     path: '/',
-    name: 'HomeView',
-    component: () => import(/* webpackChunkName: "home" */ '../views/HomeView.vue')
+    name: 'home',
+    component: Home
   },
   {
     path: '/login',
-    name: 'LoginView',
-    component: () => import(/* webpackChunkName: "login" */ '../views/LoginView.vue')
+    name: 'login',
+    component: () => import(/* webpackChunkName: "login" */ '../views/Login.vue')
   },
   {
     path: '/signup',
-    name: 'SignupView',
-    component: () => import(/* webpackChunkName: "signup" */ '../views/SingupView.vue')
-  }
-];
+    name: 'signup',
+    component: () => import(/* webpackChunkName: "signup" */ '../views/Signup.vue')
+  },
+]
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes
-});
+})
 
-export default router;
+export default router
