@@ -1,6 +1,9 @@
 <template>
   <div class="home">
-    <!-- Search Bar -->
+    <div class="profile-link" v-if="user">
+      <router-link to="/Profile">Go to Profile</router-link>
+    </div>
+
     <div class="search-bar">
       <input 
         v-model="searchQuery" 
@@ -12,33 +15,27 @@
       <button @click="searchCard" class="search-button">Search</button>
     </div>
 
-    <!-- Search Results -->
     <div class="card-list">
-      <!-- Display message only if search has been made and no results are found -->
       <div 
-        v-if="searchMade && searchQuery && (!searchResults || searchResults.length === 0)" 
+        v-if="searchResults.length === 0 " 
         class="no-results"
       >
         No cards found for "{{ searchQuery }}". Please try another search.
       </div>
 
-      <!-- Ensure searchResults is an array before rendering -->
       <a 
-        v-for="card in (searchResults || [])" 
+        v-for="card in searchResults" 
         :key="card.id" 
         :href="card.scryfall_uri" 
         target="_blank"
         class="card"
       >
-        <!-- Handle normal cards -->
         <img 
           v-if="card.image_uris"
           :src="card.image_uris.normal" 
           alt="Card image" 
           class="card-image"
         />
-
-        <!-- Handle multi-faced cards -->
         <template v-else-if="card.card_faces">
           <img 
             v-for="face in card.card_faces" 
@@ -48,7 +45,6 @@
             class="card-image"
           />
         </template>
-
         <div class="card-info">
           <h3>{{ card.name }}</h3>
           <p><strong>Set:</strong> {{ card.set_name }}</p>
@@ -61,50 +57,77 @@
 </template>
 
 <script>
+import { firebase } from '@/firebase';
+
 export default {
   name: 'Home',
   data() {
     return {
       searchQuery: '',
       searchResults: [],
-      searchMade: false,  // Track if search has been made
+      user: null, 
     };
   },
+  created() {
+    this.checkAuthStatus();
+  },
   methods: {
+    async checkAuthStatus() {
+      firebase.auth().onAuthStateChanged((user) => {
+        if (user) {
+          this.user = user;
+        } else {
+          this.user = null;
+        }
+      });
+    },
     async searchCard() {
       const query = this.searchQuery.trim();
       if (query) {
         try {
           const response = await fetch(`https://api.scryfall.com/cards/search?q=${query}`);
           const data = await response.json();
-          this.searchResults = data.data || [];  // Ensure searchResults is always an array
+          this.searchResults = data.data || []; 
         } catch (error) {
           console.error('Error searching for card:', error);
-          this.searchResults = [];  // Reset to an empty array on error
+          this.searchResults = []; 
         }
       } else {
-        this.searchResults = [];  // Reset if query is empty
+        this.searchResults = []; 
       }
-      this.searchMade = true;  // Indicate that a search has been made
     },
     resetSearchResults() {
-      this.searchResults = [];  // Reset results on input change
-      this.searchMade = false;  // Reset search flag on input change
+      this.searchResults = [];
     }
-  }
-}
+  },
+};
 </script>
 
 <style scoped>
-/* General Layout */
-.home {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 20px;
+.profile-link {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  font-weight: bold;
 }
 
-/* Search Bar Styling */
+.profile-link a {
+  color: #42b983;
+  text-decoration: none;
+}
+
+.profile-link a:hover {
+  text-decoration: underline;
+}
+
+.home {
+  position: relative;
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  font-family: Arial, sans-serif;
+}
+
 .search-bar {
   display: flex;
   justify-content: center;
@@ -137,12 +160,11 @@ export default {
   background-color: #36a76c;
 }
 
-/* Card List Styling */
 .card-list {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
   gap: 20px;
+  justify-content: center;
   width: 100%;
 }
 
@@ -152,10 +174,11 @@ export default {
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   overflow: hidden;
-  width: 180px; /* Reduce the width to make the cards smaller */
+  width: 200px;
   text-align: left;
   text-decoration: none;
   color: inherit;
+  transition: box-shadow 0.3s ease;
 }
 
 .card:hover {
@@ -165,24 +188,21 @@ export default {
 .card-image {
   width: 100%;
   height: auto;
-  border-bottom: 1px solid #ccc; /* Add a border between the image and the text */
 }
 
 .card-info {
   padding: 10px;
-  font-size: 0.9em; /* Reduce the font size for the card info */
 }
 
 .card-info h3 {
-  margin: 5px 0;
-  font-size: 1em; /* Adjust the font size of the card name */
+  margin: 10px 0;
+  font-size: 1.2em;
 }
 
 .card-info p {
   margin: 5px 0;
 }
 
-/* No Results Styling */
 .no-results {
   margin-top: 20px;
   font-size: 1.2em;

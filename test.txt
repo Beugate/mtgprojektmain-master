@@ -1,0 +1,18 @@
+loadad  deck iz txt formata
+1. izvuc deck listu 
+2.podijelit karte na vrstu
+3.prikazat karte po vrsti
+//
+gradit deck manulano
+1. klik za make deck-> dat naziv
+2. searchat ime karte koje zelis i ubacit odreden broj, max 4
+3.spremit pod odgovarajucu vrstu
+4.repeat dok user nije gotov
+5.spremit dek u firebase 
+//
+download deck koji user ima u txt formata
+//
+opcija da se odreden deck vizualno prikaze
+//
+
+maknut displayname s profil, stavit na signup i username koji ce ljudi moc trazit

@@ -2,6 +2,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import Home from '../views/Home.vue';
 import store from "@/store";
+import profile from '../views/Profile.vue';
 
 const routes = [
   {
@@ -21,6 +22,13 @@ const routes = [
     path: '/signup',
     name: 'signup',
     component: () => import(/* webpackChunkName: "signup" */ '../views/Signup.vue')
+  },
+
+  {
+    path: '/profile',
+    name: 'profile',
+    component: profile,
+    meta: { requiresAuth: true } 
   },
 ]
 
