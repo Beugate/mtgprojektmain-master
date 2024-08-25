@@ -16,3 +16,5 @@ opcija da se odreden deck vizualno prikaze
 //
 
 maknut displayname s profil, stavit na signup i username koji ce ljudi moc trazit
+
+nadogradit login ako je kriv da izda notifikaciju

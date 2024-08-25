@@ -27,15 +27,31 @@
     </section>
 
     <section v-if="categorizedDeck" class="deck-content">
-      <div v-for="(cards, type) in categorizedDeck" :key="type" class="card-type">
-        <h4>{{ type }}:</h4>
-        <ul>
-          <li v-for="card in cards" :key="card" @mouseover="showImage(card)" @mouseleave="hideImage">
-            <a :href="cardLinks[card.replace(/^\d+\s+/, '')]" target="_blank" class="card-link">
-              {{ card }}
-            </a>
-          </li>
-        </ul>
+      <h3>Mainboard</h3>
+      <div class="card-grid">
+        <div v-for="(cards, type) in categorizedDeck" :key="type" class="card-type">
+          <h4>{{ type }}:</h4>
+          <ul>
+            <li v-for="card in cards" :key="card" @mouseover="showImage(card)" @mouseleave="hideImage">
+              <a :href="cardLinks[card.replace(/^\d+\s+/, '')]" target="_blank" class="card-link">
+                {{ card }}
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <h3>Sideboard</h3>
+      <div class="card-grid">
+        <div class="card-type">
+          <ul>
+            <li v-for="card in sideboardCards" :key="card" @mouseover="showImage(card)" @mouseleave="hideImage">
+              <a :href="cardLinks[card.replace(/^\d+\s+/, '')]" target="_blank" class="card-link">
+                {{ card }}
+              </a>
+            </li>
+          </ul>
+        </div>
       </div>
     </section>
 
@@ -63,6 +79,7 @@ export default {
         'Artifacts': [],
         'Enchantments': []
       },
+      sideboardCards: [],
       userDecks: [],
       selectedDeckId: '',
       cardLinks: {}, 
@@ -163,43 +180,59 @@ export default {
         'Artifacts': [],
         'Enchantments': []
       };
+      const sideboardCards = []; 
 
       const cardLinks = {};
       const cardImages = {}; 
 
+      let isSideboard = false;
+
       for (const line of lines) {
         const cardWithQuantity = line.trim();
+        
+        if (cardWithQuantity.toLowerCase().includes('sideboard')) {
+          isSideboard = true;
+          continue;
+        }
+
         const cardName = cardWithQuantity.replace(/^\d+\s+/, ''); 
 
         if (cardName) {
           const { type_line, scryfall_uri, image_uris } = await this.getCardScryfallData(cardName);
           const cardType = this.determineCardType(type_line);
-          console.log(`Card: ${cardName}, Type: ${cardType}`); 
+          console.log(`Card: ${cardName}, Type: ${cardType}, Is Sideboard: ${isSideboard}`); 
           
           cardLinks[cardName] = scryfall_uri;
           cardImages[cardName] = image_uris ? image_uris.normal : '#'; 
 
-          if (categorizedDeck[cardType]) {
-            categorizedDeck[cardType].push(cardWithQuantity);
+          if (isSideboard) {
+            sideboardCards.push(cardWithQuantity); 
           } else {
-            console.warn(`Card type not recognized for card: ${cardName}`);
+            if (categorizedDeck[cardType]) {
+              categorizedDeck[cardType].push(cardWithQuantity);
+            } else {
+              console.warn(`Card type not recognized for card: ${cardName}`);
+            }
           }
         }
       }
 
       this.categorizedDeck = categorizedDeck;
+      this.sideboardCards = sideboardCards; 
       this.cardLinks = cardLinks;
       this.cardImages = cardImages;
     },
     
     determineCardType(typeLine) {
-      if (typeLine.includes('Creature')) return 'Creatures';
-      if (typeLine.includes('Planeswalker')) return 'Planeswalkers';
-      if (typeLine.includes('Land')) return 'Lands';
-      if (typeLine.includes('Sorcery')) return 'Sorceries';
-      if (typeLine.includes('Instant')) return 'Instants';
-      if (typeLine.includes('Artifact')) return 'Artifacts';
-      if (typeLine.includes('Enchantment')) return 'Enchantments';
+      if (typeof typeLine === 'string') {
+        if (typeLine.includes('Creature')) return 'Creatures';
+        if (typeLine.includes('Planeswalker')) return 'Planeswalkers';
+        if (typeLine.includes('Land')) return 'Lands';
+        if (typeLine.includes('Sorcery')) return 'Sorceries';
+        if (typeLine.includes('Instant')) return 'Instants';
+        if (typeLine.includes('Artifact')) return 'Artifacts';
+        if (typeLine.includes('Enchantment')) return 'Enchantments';
+      } 
     },
     
     async getCardScryfallData(cardName) {
@@ -252,66 +285,65 @@ export default {
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  margin-bottom: 20px;
+  margin-bottom: 30px;
 }
 
 .logout-button {
-  background-color: #007bff;
-  color: white;
+  background-color: #ff4c4c;
+  color: #fff;
   border: none;
   padding: 10px 20px;
-  border-radius: 4px;
   cursor: pointer;
+  border-radius: 5px;
 }
 
 .logout-button:hover {
-  background-color: #0056b3;
+  background-color: #e04343;
 }
 
 .deck-management {
-  display: flex;
-  justify-content: space-between;
+  margin-bottom: 30px;
+}
+
+.deck-select {
   margin-bottom: 20px;
 }
 
-.deck-select, .file-upload {
-  flex: 1;
-  margin-right: 20px;
-}
-
 .file-upload {
-  display: flex;
-  align-items: center;
+  margin-bottom: 20px;
 }
 
 .upload-button {
-  background-color: #28a745;
+  background-color: #4CAF50;
   color: white;
   border: none;
   padding: 10px 20px;
-  border-radius: 4px;
   cursor: pointer;
-  margin-left: 10px;
+  border-radius: 5px;
 }
 
 .upload-button:hover {
-  background-color: #218838;
+  background-color: #45a049;
 }
 
 .deck-content {
+  margin-bottom: 30px;
+}
+
+h3 {
+  margin-top: 30px;
+  color: #333;
+}
+
+.card-grid {
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
-  justify-content: space-between;
 }
 
 .card-type {
-  flex: 1 1 calc(33% - 20px); 
-  background-color: #f9f9f9;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 15px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  flex: 1;
+  min-width: 200px;
 }
 
 .card-type h4 {
@@ -324,7 +356,7 @@ export default {
 }
 
 .card-type ul li {
-  padding: 10px;
+  padding: 5px 0;
   border-bottom: 1px solid #ddd;
 }
 
@@ -342,18 +374,15 @@ export default {
   position: fixed;
   bottom: 20px;
   right: 20px;
-  width: 400px; /* Larger size */
-  height: auto;
-  background: white;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 15px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   z-index: 1000;
+  padding: 10px;
+  background: rgba(0, 0, 0, 0.7);
+  border-radius: 8px;
 }
 
 .hover-image img {
-  width: 100%;
-  height: auto;
+  max-width: 300px; 
+  border-radius: 8px;
 }
+
 </style>
