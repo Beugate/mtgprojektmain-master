@@ -35,6 +35,9 @@
               Submit
             </button>
           </form>
+          <div v-if="errorMessage" >
+            {{ errorMessage }}
+          </div>
         </div>
         <div class="col-sm"></div>
       </div>
@@ -43,7 +46,7 @@
 </template>
 
 <script>
-import {firebase} from '@/firebase';
+import { firebase } from '@/firebase';
 
 export default {
   name: 'Login',
@@ -51,6 +54,7 @@ export default {
     return {
       email: '',
       password: '',
+      errorMessage: '', 
     };
   },
   methods: {
@@ -59,10 +63,11 @@ export default {
       firebase.auth().signInWithEmailAndPassword(this.email, this.password)
         .then((result) => {
           console.log('Successful login', result);
-          
+          this.errorMessage = ''; 
         })
         .catch((error) => {
           console.error('Error', error);
+          this.errorMessage = 'Neuspješan login'; 
         });
     },
   },
