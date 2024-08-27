@@ -9,10 +9,9 @@
         v-model="searchQuery" 
         type="text" 
         placeholder="Search for an MTG card..."
-        @input="resetSearchResults" 
+        @input="searchCard" 
         class="search-input"
       />
-      <button @click="searchCard" class="search-button">Search</button>
     </div>
 
     <div class="card-list">
@@ -82,10 +81,15 @@ export default {
       });
     },
     async searchCard() {
+      if (this.searchQuery.length < 3) {
+        this.searchResults = [];
+        return;
+      }
+
       const query = this.searchQuery.trim();
       if (query) {
         try {
-          const response = await fetch(`https://api.scryfall.com/cards/search?q=${query}`);
+          const response = await fetch(`https://api.scryfall.com/cards/search?q=${encodeURIComponent(query)}`);
           const data = await response.json();
           this.searchResults = data.data || []; 
         } catch (error) {
@@ -95,9 +99,6 @@ export default {
       } else {
         this.searchResults = []; 
       }
-    },
-    resetSearchResults() {
-      this.searchResults = [];
     }
   },
 };
