@@ -24,6 +24,8 @@
         <input type="file" @change="handleFileUpload" accept=".txt" />
         <button @click="uploadDeck" class="upload-button">Upload Deck</button>
       </div>
+
+      <button @click="navigateToDeckEdit" class="create-deck-button">Edit decks</button>
     </section>
 
     <section v-if="categorizedDeck" class="deck-content">
@@ -262,6 +264,10 @@ export default {
     
     hideImage() {
       this.hoveredImage = null;
+    },
+
+    navigateToDeckEdit() {
+      this.$router.push({ name: 'DeckEdit' });
     }
   }
 };
@@ -326,6 +332,20 @@ export default {
   background-color: #45a049;
 }
 
+.create-deck-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 5px;
+  margin-top: 10px;
+}
+
+.create-deck-button:hover {
+  background-color: #0056b3;
+}
+
 .deck-content {
   margin-bottom: 30px;
 }
@@ -384,5 +404,4 @@ h3 {
   max-width: 300px; 
   border-radius: 8px;
 }
-
 </style>

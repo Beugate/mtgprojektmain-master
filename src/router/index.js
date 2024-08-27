@@ -3,6 +3,8 @@ import { createRouter, createWebHistory } from 'vue-router';
 import Home from '../views/Home.vue';
 import store from "@/store";
 import profile from '../views/Profile.vue';
+import DeckEdit from '../views/DeckEdit.vue'; // Import DeckCreation component
+
 
 const routes = [
   {
@@ -30,6 +32,14 @@ const routes = [
     component: profile,
     meta: { requiresAuth: true } 
   },
+
+  {
+    path: '/DeckEdit',
+    name: 'DeckEdit',
+    component: DeckEdit, // Use DeckCreation component
+    meta: { requiresAuth: true } // Add meta fields if needed
+  },
+
 ]
 
 const router = createRouter({
