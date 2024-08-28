@@ -15,12 +15,11 @@
     </div>
 
     <div class="card-list">
-      <div 
-        v-if="searchResults.length === 0 " 
-        class="no-results"
-      >
-        No cards found for "{{ searchQuery }}". Please try another search.
-      </div>
+  <div 
+    v-if="Array.isArray(searchResults) && searchResults.length === 0 && searchQuery.length >= 3" 
+    class="no-results">
+    No cards found for "{{ searchQuery }}". Please try another search.
+  </div>
 
       <a 
         v-for="card in searchResults" 
@@ -91,14 +90,12 @@ export default {
         try {
           const response = await fetch(`https://api.scryfall.com/cards/search?q=${encodeURIComponent(query)}`);
           const data = await response.json();
-          this.searchResults = data.data || []; 
+          this.searchResults = data.data; 
         } catch (error) {
           console.error('Error searching for card:', error);
-          this.searchResults = []; 
+          this.searchResults= [];
         }
-      } else {
-        this.searchResults = []; 
-      }
+      } 
     }
   },
 };

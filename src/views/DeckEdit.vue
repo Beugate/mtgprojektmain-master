@@ -17,15 +17,30 @@
       </button>
     </section>
 
-    <section v-if="currentDeck" class="card-search">
-      <input v-model="searchQuery" @input="searchCards" placeholder="Search for cards..." />
-      <ul v-if="searchResults.length">
-        <li v-for="card in searchResults" :key="card.id" @click="selectCard(card)">
-          <img :src="card.image" :alt="card.name" class="card-image" />
-          <span>{{ card.name }}</span>
-        </li>
-      </ul>
-    </section>
+   <section v-if="currentDeck" class="card-search">
+  <input 
+    v-model="searchQuery" 
+    type="text" 
+    placeholder="Search for an MTG card..." 
+    @input="searchCard" 
+    class="search-input"
+  />
+  
+  <div 
+    v-if="Array.isArray(searchResults) && searchResults.length === 0 && searchQuery.length >= 3" 
+    class="no-results"
+  >
+    No cards found for "{{ searchQuery }}". Please try another search.
+  </div>
+  
+  <ul v-if="Array.isArray(searchResults) && searchResults.length">
+    <li v-for="card in searchResults" :key="card.id" @click="selectCard(card)">
+      <img :src="card.image_uris ? card.image_uris.normal : ''" :alt="card.name" class="card-image" />
+      <span>{{ card.name }}</span>
+    </li>
+  </ul>
+</section>
+
 
     <section class="deck-input">
       <div v-for="(card, index) in deckCards" :key="index" class="deck-card">
@@ -59,7 +74,7 @@ export default {
       deckCards: [],
       currentDeck: null,
       selectedDeckId: '',
-      userDecks: [], 
+      userDecks: [],
       errorMessage: ''
     };
   },
@@ -88,24 +103,24 @@ export default {
       }
     },
 
-    async searchCards() {
+    async searchCard() {
       if (this.searchQuery.length < 3) {
         this.searchResults = [];
         return;
       }
 
-      try {
-        const response = await fetch(`https://api.scryfall.com/cards/search?q=${encodeURIComponent(this.searchQuery)}`);
-        const data = await response.json();
-        this.searchResults = data.data.map(card => ({
-          name: card.name,
-          id: card.id,
-          image: card.image_uris?.small || 'https://via.placeholder.com/100x140',
-        }));
-      } catch (error) {
-        console.error('Error searching cards:', error);
-        this.errorMessage = 'Error searching for cards.';
-      }
+      const query = this.searchQuery.trim();
+      if (query) {
+        try {
+          const response = await fetch(`https://api.scryfall.com/cards/search?q=${encodeURIComponent(query)}`);
+          const data = await response.json();
+          this.searchResults = data.data; 
+        } catch (error) {
+          console.error('Error searching for card:', error);
+
+          
+        }
+      } 
     },
 
     selectCard(card) {
@@ -173,7 +188,7 @@ export default {
       this.deckCards = [];
       this.currentDeck = null;
       this.selectedDeckId = '';
-      this.fetchUserDecks(); 
+      this.fetchUserDecks();
     },
 
     navigateToProfile() {
@@ -225,11 +240,12 @@ export default {
   margin-bottom: 20px;
 }
 
-input[type="text"] {
+.search-input {
   width: 100%;
   padding: 10px;
   border: 1px solid #ddd;
   border-radius: 5px;
+  margin-bottom: 10px;
 }
 
 ul {
@@ -296,5 +312,11 @@ li:hover {
   color: red;
   margin-top: 20px;
   text-align: center;
+}
+
+.no-results {
+  color: red;
+  margin-top: 10px;
+  font-size: 14px;
 }
 </style>
