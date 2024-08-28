@@ -112,7 +112,7 @@ export default {
       const query = this.searchQuery.trim();
       if (query) {
         try {
-          const response = await fetch(`https://api.scryfall.com/cards/search?q=${encodeURIComponent(query)}`);
+      const response = await fetch(`https://api.scryfall.com/cards/search?q=name:${encodeURIComponent(query)}`);
           const data = await response.json();
           this.searchResults = data.data; 
         } catch (error) {
