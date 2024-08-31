@@ -33,7 +33,4 @@ uploadati .txt format deckove te ih kasnije editat po želji. Korisnik može uba
   
 - Link na javni prototip: https://www.figma.com/proto/cgwF9vknrxKZoyECgrBDxc/mtgatherer?node-id=0-1&t=VxR46uhKJha8cEXi-1
 
-MTGatherer je aplikacija koja služi za pretraživanje Magic the Gathering karata koristeći Scryfall API. Uz pretraživanje moguće je
-uploadati .txt format deckove te ih kasnije editat po želji. Korisnik može ubaciti ili izbaciti karte iz decka.
-
 link na aplikaciju: https://mtgatherer.vercel.app
