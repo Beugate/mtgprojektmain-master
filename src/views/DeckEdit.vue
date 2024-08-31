@@ -80,6 +80,7 @@ export default {
   },
   created() {
     this.fetchUserDecks();
+    console.log("test");
   },
   methods: {
     async fetchUserDecks() {

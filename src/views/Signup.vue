@@ -1,4 +1,3 @@
-<!-- SignupView.vue -->
 <template>
   <div class="signup">
     <h1>This is a signup page</h1>
@@ -9,12 +8,25 @@
           <form>
             <div class="form-group">
               <label for="exampleInputEmail1">Email address</label>
-              <input type="email" v-model="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email" />
+              <input
+                type="email"
+                v-model="email"
+                class="form-control"
+                id="exampleInputEmail1"
+                aria-describedby="emailHelp"
+                placeholder="Enter email"
+              />
               <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
             </div>
             <div class="form-group">
               <label for="exampleInputPassword1">Password</label>
-              <input type="password" v-model="password" class="form-control" id="exampleInputPassword1" placeholder="Password" />
+              <input
+                type="password"
+                v-model="password"
+                class="form-control"
+                id="exampleInputPassword1"
+                placeholder="Password"
+              />
             </div>
             <button type="button" @click="signup" class="btn btn-primary">Submit</button>
           </form>
@@ -25,35 +37,35 @@
   </div>
 </template>
 
-
-
 <script>
-import {firebase} from '@/firebase';
+import { firebase } from '@/firebase';
 export default {
-  name:"Signup",
-  data(){
-    return{
-      email:'',
-      password:'',
-
+  name: "Signup",
+  data() {
+    return {
+      email: '',
+      password: '',
     };
   },
+  methods: {
+    signup() {
+      if (this.password.length < 6) {
+        alert("Password must be at least 6 characters long.");
+        return; 
+      }
 
-
-methods:{
-  signup() {
       firebase
-      .auth()
-      .createUserWithEmailAndPassword (this.email, this.password)
-      .then(function(){
-          console.log("uspjesna reg");
-      })
-      .catch(function(error){
-        console.error("greska",error)
-      });
-      console.log('nastavak');
+        .auth()
+        .createUserWithEmailAndPassword(this.email, this.password)
+        .then(function () {
+          console.log("Successful registration.");
+        })
+        .catch(function (error) {
+          console.error("Error", error);
+        });
+
+      console.log('Continuing...');
+    }
   }
-}
 };
 </script>
-
