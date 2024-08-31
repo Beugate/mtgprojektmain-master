@@ -22,3 +22,8 @@ npm run lint
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
+
+MTGatherer je aplikacija koja služi za pretraživanje Magic the Gathering karata koristeći Scryfall API. Uz pretraživanje moguće je
+uploadati .txt format deckove te ih kasnije editat po želji. Korisnik može ubaciti ili izbaciti karte iz decka.
+
+link na aplikaciju: https://mtgatherer.vercel.app
