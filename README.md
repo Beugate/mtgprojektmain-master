@@ -30,6 +30,7 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 - MTGatherer je aplikacija koja služi za pretraživanje Magic the Gathering karata koristeći Scryfall API. Uz pretraživanje moguće je
 uploadati .txt format deckove te ih kasnije editat po želji. Korisnik može ubaciti ili izbaciti karte iz decka.
 - Zaduženja (planirana) po članu tima - Tomas Mikašinović-Komšo izrađuje i implementira aplikaciju
+- Završna ocjena: 4
   
 - Link na javni prototip: https://www.figma.com/proto/cgwF9vknrxKZoyECgrBDxc/mtgatherer?node-id=0-1&t=VxR46uhKJha8cEXi-1
 
